@@ -1,17 +1,24 @@
+using TodoList.Application;
+using TodoList.Infrastructure;
 using TodoList.WebUIServer.Components;
 
-var builder = WebApplication.CreateBuilder(args);
+WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
+ConfigurationManager configuration = builder.Configuration;
 
 // Add services to the container.
 builder.Services.AddRazorComponents();
     // .AddInteractiveServerComponents();
 
-var app = builder.Build();
+builder.Services.AddApplication()
+    .AddInfrastructure(configuration);
+
+WebApplication app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error", createScopeForErrors: true);
+
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
@@ -24,4 +31,4 @@ app.UseAntiforgery();
 app.MapRazorComponents<App>();
     // .AddInteractiveServerRenderMode();
 
-app.Run();
+await app.RunAsync();
