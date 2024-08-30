@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel;
 using System.Net;
 using System.Net.Http.Json;
 using FluentAssertions;
@@ -7,6 +8,7 @@ using TodoList.Test.Abstractions;
 
 namespace TodoList.Test.Tasks.Functional;
 
+[Trait("Category", "FunctionalC")]
 public class CreateTaskTests : BaseFunctionalTest
 {
     public CreateTaskTests(FunctionalTestWebAppFactory factory)

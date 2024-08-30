@@ -8,6 +8,7 @@ using TodoList.Test.Abstractions;
 
 namespace TodoList.Test.Tasks.Functional;
 
+[Trait("Category", "FunctionalU")]
 public class UpdateTaskTests : BaseFunctionalTest
 {
     public UpdateTaskTests(FunctionalTestWebAppFactory factory)

@@ -9,6 +9,7 @@ using TodoList.Domain.SharedKernel.Extensions;
 
 namespace TodoList.Test.Tasks.Commands.CreateTask;
 
+[Trait("Category", "Unit")]
 public class CreateTask_CreateTaskCommandHandlerTest
 {
     private readonly CreateTaskCommandHandler _handler;
