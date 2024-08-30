@@ -6,7 +6,7 @@ using MongoDB.Bson;
 using TodoList.Application.DTOs;
 using TodoList.Test.Abstractions;
 
-namespace TodoList.Test.Tasks;
+namespace TodoList.Test.Tasks.Functional;
 
 public class DeleteTaskTests : BaseFunctionalTest
 {

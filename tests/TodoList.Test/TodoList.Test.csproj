@@ -34,4 +34,8 @@
     <ProjectReference Include="..\..\src\TodoList.API\TodoList.API.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Tasks/Queries/" />
+  </ItemGroup>
+
 </Project>
