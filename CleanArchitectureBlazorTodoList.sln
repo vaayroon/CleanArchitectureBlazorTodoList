@@ -18,6 +18,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionIt
 		.gitignore = .gitignore
 		.editorconfig = .editorconfig
 		Directory.Build.props = Directory.Build.props
+		docker-compose.yml = docker-compose.yml
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TodoList.API", "src\TodoList.API\TodoList.API.csproj", "{50E6B1C8-73AA-4DEB-8EAB-940C44A472DF}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".vscode", ".vscode", "{7C463ED6-76BF-4EA7-8F97-2906B1136C8E}"
+	ProjectSection(SolutionItems) = preProject
+		.vscode\tasks.json = .vscode\tasks.json
+		.vscode\launch.json = .vscode\launch.json
 	EndProjectSection
 EndProject
 Global
@@ -42,6 +51,10 @@ Global
 		{FB892E91-4C32-424B-AC0F-91540B76CB61}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FB892E91-4C32-424B-AC0F-91540B76CB61}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FB892E91-4C32-424B-AC0F-91540B76CB61}.Release|Any CPU.Build.0 = Release|Any CPU
+		{50E6B1C8-73AA-4DEB-8EAB-940C44A472DF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{50E6B1C8-73AA-4DEB-8EAB-940C44A472DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{50E6B1C8-73AA-4DEB-8EAB-940C44A472DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{50E6B1C8-73AA-4DEB-8EAB-940C44A472DF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -51,5 +64,7 @@ Global
 		{F09C78EB-1F2F-4A9A-AD00-FAFD7C243CD4} = {1A867562-FBC5-4081-8A2F-4CBD99ABEAB5}
 		{42ABC7F3-C827-4B5F-86FE-266EC91942E4} = {1A867562-FBC5-4081-8A2F-4CBD99ABEAB5}
 		{FB892E91-4C32-424B-AC0F-91540B76CB61} = {1A867562-FBC5-4081-8A2F-4CBD99ABEAB5}
+		{50E6B1C8-73AA-4DEB-8EAB-940C44A472DF} = {1A867562-FBC5-4081-8A2F-4CBD99ABEAB5}
+		{7C463ED6-76BF-4EA7-8F97-2906B1136C8E} = {0399119B-C318-403C-A538-B1BD39E381C1}
 	EndGlobalSection
 EndGlobal
