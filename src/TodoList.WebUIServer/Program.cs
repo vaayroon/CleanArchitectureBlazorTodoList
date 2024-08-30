@@ -1,16 +1,19 @@
-using TodoList.Application;
-using TodoList.Infrastructure;
+using Serilog;
 using TodoList.WebUIServer.Components;
+using TodoList.WebUIServer.Services;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
-ConfigurationManager configuration = builder.Configuration;
 
 // Add services to the container.
-builder.Services.AddRazorComponents();
-    // .AddInteractiveServerComponents();
+builder.Services.AddRazorComponents()
+    .AddInteractiveServerComponents();
 
-builder.Services.AddApplication()
-    .AddInfrastructure(configuration);
+// get teh url from BackendUrl
+string backendUrl = builder.Configuration["BackendUrl"] ?? "http://localhost:5206/";
+builder.Services.AddHttpClient<TaskService>(client => client.BaseAddress = new Uri(backendUrl));
+
+builder.Host.UseSerilog((context, configuration) =>
+    configuration.ReadFrom.Configuration(context.Configuration));
 
 WebApplication app = builder.Build();
 
@@ -28,7 +31,7 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseAntiforgery();
 
-app.MapRazorComponents<App>();
-    // .AddInteractiveServerRenderMode();
+app.MapRazorComponents<App>()
+    .AddInteractiveServerRenderMode();
 
 await app.RunAsync();
