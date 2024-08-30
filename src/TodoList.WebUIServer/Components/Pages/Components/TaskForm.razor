@@ -1,0 +1,69 @@
+﻿<EditForm Model="Model" OnValidSubmit="HandleValidSubmit">
+    <CustomValidation @ref="customValidation" />
+    @* <ValidationSummary /> *@
+
+    <div class="form-group">
+        <label for="title">Title:</label>
+        <InputText id="title" @bind-Value="Model.Title" class="form-control" />
+        <ValidationMessage For="@(() => Model.Title)" />
+    </div>
+
+    <div class="form-group">
+        <label for="description">Description:</label>
+        <InputTextArea id="description" @bind-Value="Model.Description" class="form-control" />
+        <ValidationMessage For="@(() => Model.Description)" />
+    </div>
+
+    <div class="form-group form-check">
+        <InputCheckbox id="isCompleted" @bind-Value="Model.IsCompleted" class="form-check-input" />
+        <label class="form-check-label" for="isCompleted">Is Completed</label>
+    </div>
+
+    <div class="d-flex justify-content-center align-items-center">
+        <Button Color="secondary" Size="mb-3" Icon="bi bi-x" OnClick="OnCancel">
+            Cancel
+        </Button>
+        <Button Type="submit" Color="primary" Size="mb-3" Icon="bi bi-floppy">
+            @SubmitButtonText
+        </Button>
+    </div>
+</EditForm>
+
+@code {
+    private CustomValidation? customValidation;
+    [Parameter] public TaskItem Model { get; set; } = new TaskItem();
+    [Parameter] public string SubmitButtonText { get; set; } = "Save";
+    [Parameter] public EventCallback<(TaskItem, CustomValidation?)> OnValidSubmit { get; set; }
+    [Parameter] public EventCallback OnCancel { get; set; }
+    private bool IsNewTask = true;
+
+    protected override void OnInitialized()
+    {
+        IsNewTask = string.IsNullOrWhiteSpace(Model.Id);
+    }
+
+    private void HandleValidSubmit()
+    {
+        customValidation?.ClearErrors();
+
+        var errors = new Dictionary<string, List<string>>();
+
+        if (!IsNewTask && string.IsNullOrWhiteSpace(Model.Id))
+        {
+            errors.Add(nameof(Model.Id), new() { "Id is required" });
+        }
+
+        if (string.IsNullOrWhiteSpace(Model.Title))
+        {
+            errors.Add(nameof(Model.Title), new() { "Title is required" });
+        }
+
+        if (errors.Any())
+        {
+            customValidation?.DisplayErrors(errors);
+        } else
+        {
+            OnValidSubmit.InvokeAsync((Model, customValidation));
+        }
+    }
+}

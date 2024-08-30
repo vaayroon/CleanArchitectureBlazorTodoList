@@ -1,0 +1,52 @@
+﻿@code {
+    [Parameter]
+    public TaskItem Task { get; set; } = null!;
+
+    [Parameter]
+    public EventCallback<TaskItem> OnTaskEdit { get; set; }
+
+    [Parameter]
+    public EventCallback<TaskItem> OnTaskUpdate { get; set; }
+
+    [Parameter]
+    public EventCallback<TaskItem> OnTaskDelete { get; set; }
+
+    private async Task ToggleComplete()
+    {
+        Task.IsCompleted = !Task.IsCompleted;
+        await OnTaskUpdate.InvokeAsync(Task);
+    }
+
+    private async Task Delete()
+    {
+        await OnTaskDelete.InvokeAsync(Task);
+    }
+
+    private async Task Edit()
+    {
+        await OnTaskEdit.InvokeAsync(Task);
+    }
+}
+
+<tr class="task-item">
+    <td>
+        <span>@Task.Title</span>
+    </td>
+    <td>
+        <span>@Task.Description</span>
+    </td>
+    <td>
+        <Button Color="secondary" Size="mb-3" Icon="bi bi-pencil" OnClick="Edit">
+        </Button>
+        <Button Color="danger" Size="mb-3" Icon="bi bi-trash" OnClick="Delete">
+        </Button>
+        @if (!Task.IsCompleted)
+        {
+            <Button Color="outline-success" Size="mb-3" Icon="bi bi-check-circle" OnClick="ToggleComplete">
+            </Button>
+        } else {
+            <Button Color="outline-danger" Size="mb-3" Icon="bi bi-x" OnClick="ToggleComplete">
+            </Button>
+        }
+    </td>
+</tr>

@@ -1,0 +1,15 @@
+﻿@code {
+    [Parameter] public IEnumerable<TaskItem> Tasks { get; set; } = new List<TaskItem>();
+    [Parameter] public EventCallback<TaskItem> OnEdit { get; set; }
+    [Parameter] public EventCallback<TaskItem> OnUpdateTask { get; set; }
+    [Parameter] public EventCallback<TaskItem> OnDeleteTask { get; set; }
+}
+
+<table class="table table-bordered">
+    <tbody>
+        @foreach (var task in Tasks)
+        {
+            <TaskItemComponent Task="task" OnTaskEdit="OnEdit" OnTaskUpdate="OnUpdateTask" OnTaskDelete="OnDeleteTask" />
+        }
+    </tbody>
+</table>
