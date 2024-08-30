@@ -1,0 +1,43 @@
+﻿<CascadingValue Value="this">
+	<div class="btn-group" role="group">
+		@foreach (NavItem tabPage in Pages)
+		{
+			<button type="button"
+					class="btn @GetButtonClass(tabPage)"
+					@onclick=@( () => ActivatePage(tabPage) )>
+				@tabPage.Text
+			</button>
+		}
+	</div>
+	@ChildContent
+</CascadingValue>
+
+@code {
+	// Next line is needed so we are able to add <NavItem> components inside
+	[Parameter]
+	public RenderFragment ChildContent { get; set; }
+    [Parameter]
+    public EventCallback<NavItem> OnActivatePage { get; set; }
+
+	public NavItem ActivePage { get; set; }
+	List<NavItem> Pages = new List<NavItem>();
+
+	internal void AddPage(NavItem tabPage)
+	{
+		Pages.Add(tabPage);
+		if (Pages.Count == 1)
+			ActivePage = tabPage;
+		StateHasChanged();
+	}
+
+	string GetButtonClass(NavItem page)
+	{
+		return page == ActivePage ? "btn-primary" : "btn-secondary";
+	}
+
+	void ActivatePage(NavItem page)
+	{
+        ActivePage = page;
+        OnActivatePage.InvokeAsync(page);
+	}
+}
