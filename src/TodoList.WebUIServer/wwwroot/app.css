@@ -49,3 +49,128 @@ h1:focus {
 .darker-border-checkbox.form-check-input {
     border-color: #929292;
 }
+
+/* Modal styles */
+.modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    width: 90%;
+    max-width: 500px;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.modal-header h3 {
+    margin: 0;
+    font-size: 1.5rem;
+}
+
+.close-button {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 0;
+    color: #333;
+}
+
+.close-button:hover {
+    color: #000;
+}
+
+.modal-body {
+    margin-bottom: 15px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+    .modal-content {
+        width: 95%;
+        padding: 15px;
+    }
+
+    .modal-header h3 {
+        font-size: 1.2rem;
+    }
+}
+
+/* TODO List Container Styles */
+.todo-container {
+    max-width: 800px;
+    margin: 0 auto;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.todo-header {
+    background-color: white;
+    color: #007bff;
+    padding: 20px;
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.todo-content {
+    padding: 20px;
+}
+
+.todo-footer {
+    background-color: #f1f3f5;
+    padding: 15px;
+    text-align: center;
+    font-size: 14px;
+    color: #6c757d;
+}
+
+/* Table Styles */
+.table td:last-child {
+    display: flex;
+    justify-content: flex-start;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+    .todo-container {
+        max-width: 100%;
+        border-radius: 0;
+    }
+
+    .todo-header {
+        font-size: 20px;
+        padding: 15px;
+    }
+
+    .todo-content {
+        padding: 10px;
+    }
+
+    .table th,
+    .table td {
+        padding: 8px;
+    }
+}
