@@ -78,6 +78,31 @@ You can run the entire application stack (frontend, backend, and MongoDB) using 
     - Backend: [http://localhost:5206/swagger](http://localhost:5206/swagger)
     - MongoDB: `mongodb://admin:password1@localhost:27017/`
 
+## Running Tests
+
+### Functional Tests
+
+Functional tests are implemented using `Testcontainers.MongoDb`. To run the functional tests, use the following command inside tests/TodoList.Test:
+
+```sh
+cd tests/TodoList.Test
+```
+
+Then Run:
+
+```sh
+dotnet test --filter Category=FunctionalU
+dotnet test --filter Category=FunctionalC
+dotnet test --filter Category=FunctionalD
+```
+
+### Unit Tests
+
+Unit tests currently cover CQRS command handlers. To run the unit tests, use the following command:
+
+```sh
+dotnet test --filter Category=Unit
+```
 
 ## Contributing
 
