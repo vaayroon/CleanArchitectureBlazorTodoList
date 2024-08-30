@@ -1,0 +1,205 @@
+﻿@page "/taskmanager"
+@rendermode InteractiveServer
+
+@using TodoList.WebUIServer.Services
+@inject TaskService TaskService
+
+<div class="todo-container">
+    <div class="todo-header">
+        <h1 class="text-center">Task Manager</h1>
+        <NavTab OnActivatePage="HandleActivePageChanged">
+            <NavItem Text="@TodoTaskStatus.All.Name">
+            </NavItem>
+            <NavItem Text="@TodoTaskStatus.Pending.Name">
+            </NavItem>
+            <NavItem Text="@TodoTaskStatus.Completed.Name">
+            </NavItem>
+        </NavTab>
+    </div>
+    <div class="todo-content">
+        <TaskList Tasks="@tasks" OnEdit="OpenModal"
+            OnUpdateTask="ToggleStatusTask" OnDeleteTask="OpenDeleteModal"/>
+    </div>
+    <div class="todo-footer">
+        <Button Color="success" Size="mb-3" Icon="bi bi-plus" OnClick="() => OpenModal(null)">
+            Add New Task
+        </Button>
+    </div>
+</div>
+
+<Modal IsVisible="@isModalVisible" Title="@modalTitle" OnClose="CloseModal">
+    <TaskForm Model="@modalCurrentTask" SubmitButtonText="@submitButtonText" OnValidSubmit="SaveTask" OnCancel="CloseModal" />
+</Modal>
+
+<Modal IsVisible="@isDeleteModalVisible" Title="@deleteModalTitle" OnClose="CloseDeleteModal">
+    <div class="d-flex justify-content-center align-items-center">
+        <Button Color="secondary" Size="mb-3" Icon="bi bi-x" OnClick="CloseDeleteModal">
+            Cancel
+        </Button>
+        <Button Color="primary" Size="mb-3" Icon="bi bi-floppy" OnClick="DeleteTask">
+            Submit
+        </Button>
+    </div>
+</Modal>
+
+@code {
+    private IEnumerable<TaskItem> tasks = new List<TaskItem>();
+    private bool isModalVisible = false;
+    private bool isDeleteModalVisible = false;
+    private TaskItem currentTask = new TaskItem();
+    private TaskItem modalCurrentTask = new TaskItem();
+    private TodoTaskStatus currentTab = TodoTaskStatus.All;
+    private string modalTitle;
+    private string deleteModalTitle;
+    private string submitButtonText;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadTasks("all");
+    }
+
+    private async Task LoadTasks(string status)
+    {
+        var result = await TaskService.GetTasksAsync(status);
+        if (result.IsFailure) return;
+        tasks = result.Value;
+    }
+
+    private void OpenModal(TaskItem? task = null)
+    {
+        currentTask = task ?? new TaskItem();
+        modalCurrentTask = task is null ? new TaskItem() :
+            new TaskItem()
+            {
+                Id = task.Id,
+                Title = task.Title,
+                Description = task.Description,
+                IsCompleted = task.IsCompleted
+            };
+        isModalVisible = true;
+        modalTitle = task == null ? "Add New Task" : "Edit Task";
+        submitButtonText = task == null ? "Add" : "Update";
+    }
+
+    private void CloseModal()
+    {
+        isModalVisible = false;
+        currentTask = new TaskItem();
+    }
+
+    private void OpenDeleteModal(TaskItem task)
+    {
+        deleteModalTitle = "Do you want to delete this task?";
+        currentTask = task;
+        isDeleteModalVisible = true;
+    }
+
+    private void CloseDeleteModal()
+    {
+        isDeleteModalVisible = false;
+    }
+
+    private void MaybeRemoveTaskFromCollection(TaskItem task)
+    {
+        if (currentTab == TodoTaskStatus.All) return;
+        tasks = tasks.Where(t => t.Id != task.Id);
+    }
+
+    private void RemoveTaskFromCollection()
+    {
+        tasks = tasks.Where(t => t.Id != currentTask.Id);
+    }
+
+    private void AddTaskToCollection(TaskItem task)
+    {
+        if (currentTab == TodoTaskStatus.All)
+        {
+            tasks = tasks.Append(task);
+        }
+
+        if (currentTab == TodoTaskStatus.Pending && !task.IsCompleted)
+        {
+            tasks = tasks.Append(task);
+        }
+
+        if (currentTab == TodoTaskStatus.Completed && task.IsCompleted)
+        {
+            tasks = tasks.Append(task);
+        }
+    }
+
+    private async Task SaveTask((TaskItem task, CustomValidation? customValidation) args)
+    {
+        var (task, customValidation) = args;
+        if (string.IsNullOrWhiteSpace(task.Id))
+        {
+            var response = await TaskService.CreateTaskAsync(task);
+            if (response is Dictionary<string, List<string>> errors && errors.Count > 0)
+            {
+                customValidation?.DisplayErrors(errors);
+                return;
+            } else if (response is Result result)
+            {
+                if (result.IsFailure) return;
+                if (result is Result<TaskItem> resultT)
+                {
+                    AddTaskToCollection(resultT.Value);
+                }
+            } else
+            {
+                return;
+            }
+        }
+        else
+        {
+            var existingTask = tasks.FirstOrDefault(t => t.Id == task.Id);
+            if (existingTask is null) return;
+            var response = await TaskService.UpdateTaskAsync(task);
+            if (response is Dictionary<string, List<string>> errors && errors.Count > 0)
+            {
+                customValidation?.DisplayErrors(errors);
+                return;
+            } else if (response is Result result)
+            {
+                if (result.IsFailure) return;
+                existingTask.Title = task.Title;
+                existingTask.Description = task.Description;
+                existingTask.IsCompleted = task.IsCompleted;
+                MaybeRemoveTaskFromCollection(existingTask);
+            } else {
+                return;
+            }
+        }
+        CloseModal();
+    }
+
+    private async Task ToggleStatusTask(TaskItem task)
+    {
+        if (string.IsNullOrWhiteSpace(task.Id)) return;
+        var result = await TaskService.ToggleStatusTaskAsync(task.Id, task.IsCompleted);
+        if (result.IsFailure)
+        {
+            task.IsCompleted = !task.IsCompleted;
+            return;
+        }
+        MaybeRemoveTaskFromCollection(task);
+    }
+
+    private async Task DeleteTask()
+    {
+        if (string.IsNullOrEmpty(currentTask.Id)) return;
+        var result = await TaskService.DeleteTaskAsync(currentTask.Id);
+        if (result.IsFailure) return;
+        RemoveTaskFromCollection();
+        CloseDeleteModal();
+    }
+
+    private async Task HandleActivePageChanged(NavItem page)
+    {
+        @* Update Current Tab *@
+        var newTab = TodoTaskStatus.FromName(page.Text);
+        if (newTab is null) return;
+        currentTab = newTab;
+        await LoadTasks(currentTab.Name);
+    }
+}
