@@ -81,6 +81,7 @@ public class TasksController : ControllerBase
     {
         return await Result
             .Create(new DeleteTaskCommand(id))
+            .Ensure(command => !string.IsNullOrWhiteSpace(command.Id), Error.NullValue)
             .Bind(command => _sender.Send(command, cancellationToken))
             .MatchResult<IActionResult>(
                 result => Ok(result.Success),
