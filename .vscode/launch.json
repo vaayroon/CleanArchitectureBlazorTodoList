@@ -1,0 +1,35 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Todo Blazor",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "buildDevelopBlazor",
+            "program": "${workspaceFolder}/src/TodoList.WebUIServer/bin/Debug/net8.0/TodoList.WebUIServer.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/src/TodoList.WebUIServer",
+            "justMyCode": true,
+            "stopAtEntry": false,
+            "launchSettingsProfile": "Development"
+        },
+        {
+            "name": "Todo Backend API",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "buildDevelop",
+            "program": "${workspaceFolder}/src/TodoList.API/bin/Debug/net8.0/TodoList.API.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/src/TodoList.API",
+            "justMyCode": true,
+            "stopAtEntry": false,
+            "launchSettingsProfile": "Development"
+        }
+    ],
+    "compounds": [
+      {
+        "name": "Todo Full Project",
+        "configurations": ["Todo Blazor", "Todo Backend API"]
+      }
+    ]
+}

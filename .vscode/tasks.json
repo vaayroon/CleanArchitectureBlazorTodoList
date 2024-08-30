@@ -1,0 +1,53 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "buildDevelopBlazor",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "build",
+                "${workspaceFolder}/src/TodoList.WebUIServer/TodoList.WebUIServer.csproj",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary",
+                "/property:ASPNETCORE_ENVIRONMENT=Development"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "buildDevelop",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "build",
+                "${workspaceFolder}/src/TodoList.API/TodoList.API.csproj",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary",
+                "/property:ASPNETCORE_ENVIRONMENT=Development"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+        {
+          "label": "build-both",
+          "dependsOn": ["buildDevelopBlazor", "buildDevelop"],
+          "problemMatcher": []
+        },
+        {
+            "label": "Generate Test Coverage",
+            "dependsOn": [],
+            "command": "dotnetcoveragetests",
+            "type": "shell",
+        },
+        {
+            "label": "Generate Coverage Report",
+            "command": "~/.dotnet/tools/reportgenerator",
+            "type": "shell",
+            "args": [
+                "-reports:${workspaceFolder}/testresult/coverage.info",
+                "-targetdir:${workspaceFolder}/testresult/covstats"
+            ],
+            "dependsOn": ["Generate Test Coverage"],
+            "problemMatcher": []
+        }
+    ]
+}
